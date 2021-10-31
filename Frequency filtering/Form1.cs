@@ -97,7 +97,7 @@ namespace Lab4
         {
             /* Первоначальные настройки изображения */
             Bitmap bitmapTemp = new Bitmap(tbPath.Text);
-            imageWidth = (int)Math.Pow(2, (int)Math.Log(bitmapTemp.Width, 2));
+            imageWidth = (int)Math.Pow(2, (int)Math.Log(bitmapTemp.Width, 2)); //ширина и высота картинки должны быть ровны 2 в степени для БПФ
             imageHeight = (int)Math.Pow(2, (int)Math.Log(bitmapTemp.Height, 2));
             inputImage = new Image<Bgr, byte>(new Bitmap(bitmapTemp, imageWidth, imageHeight));
 
@@ -129,12 +129,12 @@ namespace Lab4
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
                         if (Distance(i, j) > (circleIgeal * 10 + 5))
-                           complexImageIgeal.Data[i, j] *= 0;
+                           complexImageIgeal.Data[j, i] *= 0;
                 pictureBoxes[circleIgeal * 2].Image = complexImageIgeal.ToBitmap();
                 labels[circleIgeal * 2].Text = $"Спектор изображения c идеальным фильтром = {circleIgeal * 10 + 5}";
 
                 /* Изображение с идеальным фильтром */
-                complexImageIgeal.BackwardFourierTransform();
+                complexImageIgeal.BackwardFourierTransform();//обратное БПФ
                 pictureBoxes[circleIgeal * 2 + 1].Image = complexImageIgeal.ToBitmap();
                 labels[circleIgeal * 2 + 1].Text = $"Изображение с идеальным фильтром = {circleIgeal * 10 + 5}";
             }
@@ -146,7 +146,7 @@ namespace Lab4
                 ComplexImage complexImageButterworth = (ComplexImage)complexImage.Clone();
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
-                        complexImageButterworth.Data[i, j] *= 1 / (1 + Math.Pow(Distance(i, j) / (circleButterworth * 10 + 5), 2 * n));
+                        complexImageButterworth.Data[j, i] *= 1 / (1 + Math.Pow(Distance(i, j) / (circleButterworth * 10 + 5), 2 * n));
                 pictureBoxes[circleButterworth * 2 + 10].Image = complexImageButterworth.ToBitmap();
                 labels[circleButterworth * 2 + 10].Text = $"Спектор изображения c фильтром Баттервотта = {circleButterworth * 10 + 5}";
 
@@ -162,7 +162,7 @@ namespace Lab4
                 ComplexImage complexImageGaussian = (ComplexImage)complexImage.Clone();
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
-                        complexImageGaussian.Data[i, j] *= Math.Exp(-Distance(i, j) / 2 / (circleGaussian * 10 + 5));
+                        complexImageGaussian.Data[j, i] *= Math.Exp(-Math.Pow(Distance(i, j), 2) / 2 / Math.Pow(circleGaussian * 10 + 5, 2));
                 pictureBoxes[circleGaussian * 2 + 20].Image = complexImageGaussian.ToBitmap();
                 labels[circleGaussian * 2 + 20].Text = $"Спектор изображения c Гауссовским фильтром = {circleGaussian * 10 + 5}";
 
@@ -181,7 +181,7 @@ namespace Lab4
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
                         if (Distance(i, j) <= circleIgeal2 * 10 + 5)
-                            complexImageIgeal2.Data[i, j] *= 0;
+                            complexImageIgeal2.Data[j, i] *= 0;
                 pictureBoxes2[circleIgeal2 * 2].Image = complexImageIgeal2.ToBitmap();
                 labels2[circleIgeal2 * 2].Text = $"Спектор изображения c идеальным фильтром = {circleIgeal2 * 10 + 5}";
 
@@ -198,7 +198,7 @@ namespace Lab4
                 ComplexImage complexImageButterworth2 = (ComplexImage)complexImage.Clone();
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
-                        complexImageButterworth2.Data[i, j] *= 1 - (1 / (1 + Math.Pow(Distance(i, j) / (circleButterworth2 * 10 + 5), 2 * n2)));
+                        complexImageButterworth2.Data[j, i] *= 1 - (1 / (1 + Math.Pow(Distance(i, j) / (circleButterworth2 * 10 + 5), 2 * n2)));
                 pictureBoxes2[circleButterworth2 * 2 + 10].Image = complexImageButterworth2.ToBitmap();
                 labels2[circleButterworth2 * 2 + 10].Text = $"Спектор изображения c фильтром Баттервотта = {circleButterworth2 * 10 + 5}";
 
@@ -214,7 +214,7 @@ namespace Lab4
                 ComplexImage complexImageGaussian2 = (ComplexImage)complexImage.Clone();
                 for (int i = 0; i < imageWidth; i++)
                     for (int j = 0; j < imageHeight; j++)
-                        complexImageGaussian2.Data[i, j] *= 1 - Math.Exp(-Distance(i, j) / 2 / (circleGaussian2 * 10 + 5));
+                        complexImageGaussian2.Data[j, i] *= 1 - Math.Exp(-Math.Pow(Distance(i, j), 2) / 2 / Math.Pow(circleGaussian2 * 10 + 5, 2));
                 pictureBoxes2[circleGaussian2 * 2 + 20].Image = complexImageGaussian2.ToBitmap();
                 labels2[circleGaussian2 * 2 + 20].Text = $"Спектор изображения c Гауссовским фильтром = {circleGaussian2 * 10 + 5}";
 
